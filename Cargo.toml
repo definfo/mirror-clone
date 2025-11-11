@@ -1,6 +1,6 @@
 [package]
 authors = ["Alex Chi <iskyzh@gmail.com>"]
-edition = "2018"
+edition = "2024"
 name = "mirror-clone"
 version = "0.2.0"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

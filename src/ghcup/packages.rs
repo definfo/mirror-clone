@@ -7,9 +7,9 @@ use crate::ghcup::utils::get_raw_blob_url;
 use crate::metadata::SnapshotMeta;
 use crate::traits::{SnapshotStorage, SourceStorage};
 
-use super::parser::{GhcupYamlParser, EXPECTED_CONFIG_VERSION};
-use super::utils::{filter_map_file_objs, list_files};
 use super::GhcupRepoConfig;
+use super::parser::{EXPECTED_CONFIG_VERSION, GhcupYamlParser};
+use super::utils::{filter_map_file_objs, list_files};
 
 #[derive(Debug, Clone)]
 pub struct GhcupPackages {

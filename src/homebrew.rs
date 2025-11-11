@@ -108,40 +108,39 @@ impl SnapshotStorage<SnapshotMeta> for Homebrew {
         for f in formulae.0 {
             progress.set_message(&f.name);
 
-            if f.versions.bottle {
-                if let Some(versions_stable) = f.versions.stable {
-                    if let Some(bs) = f.bottle.stable {
-                        for (platform, v) in bs.files {
-                            if self.config.arch.is_empty()
-                                || self.config.arch == "all"
-                                || platform == self.config.arch
-                            {
-                                let key = format!(
-                                    "{name}-{version}{revision}.{platform}.bottle{rebuild}.tar.gz",
-                                    name = f.name,
-                                    version = versions_stable,
-                                    revision = if f.revision == 0 {
-                                        "".to_owned()
-                                    } else {
-                                        format!("_{}", f.revision)
-                                    },
-                                    platform = platform,
-                                    rebuild = if bs.rebuild == 0 {
-                                        "".to_owned()
-                                    } else {
-                                        format!(".{}", bs.rebuild)
-                                    },
-                                );
-                                let key = crate::utils::rewrite_url_string(&gen_map, &key);
-                                self.url_mapping.insert(key.clone(), v.url);
-                                snapshots.push(SnapshotMeta {
-                                    key,
-                                    checksum_method: Some(String::from("sha256")),
-                                    checksum: Some(v.sha256),
-                                    ..Default::default()
-                                });
-                            }
-                        }
+            if f.versions.bottle
+                && let Some(versions_stable) = f.versions.stable
+                && let Some(bs) = f.bottle.stable
+            {
+                for (platform, v) in bs.files {
+                    if self.config.arch.is_empty()
+                        || self.config.arch == "all"
+                        || platform == self.config.arch
+                    {
+                        let key = format!(
+                            "{name}-{version}{revision}.{platform}.bottle{rebuild}.tar.gz",
+                            name = f.name,
+                            version = versions_stable,
+                            revision = if f.revision == 0 {
+                                "".to_owned()
+                            } else {
+                                format!("_{}", f.revision)
+                            },
+                            platform = platform,
+                            rebuild = if bs.rebuild == 0 {
+                                "".to_owned()
+                            } else {
+                                format!(".{}", bs.rebuild)
+                            },
+                        );
+                        let key = crate::utils::rewrite_url_string(&gen_map, &key);
+                        self.url_mapping.insert(key.clone(), v.url);
+                        snapshots.push(SnapshotMeta {
+                            key,
+                            checksum_method: Some(String::from("sha256")),
+                            checksum: Some(v.sha256),
+                            ..Default::default()
+                        });
                     }
                 }
             }

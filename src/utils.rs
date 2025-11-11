@@ -3,7 +3,7 @@ use std::str::FromStr;
 
 use indicatif::ProgressStyle;
 use regex::Regex;
-use slog::{o, Drain};
+use slog::{Drain, o};
 
 use crate::common::SnapshotPath;
 use crate::error::Result;

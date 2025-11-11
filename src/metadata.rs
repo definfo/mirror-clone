@@ -104,11 +104,7 @@ impl Diff for SnapshotMeta {
 
 impl Metadata for SnapshotMeta {
     fn priority(&self) -> isize {
-        if self.flags.force_last {
-            -1
-        } else {
-            0
-        }
+        if self.flags.force_last { -1 } else { 0 }
     }
 
     fn last_modified(&self) -> Option<u64> {

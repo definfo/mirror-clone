@@ -11,7 +11,7 @@
 use std::env;
 
 use async_trait::async_trait;
-use futures_util::{stream, StreamExt, TryStreamExt};
+use futures_util::{StreamExt, TryStreamExt, stream};
 use google_bigquery2::api::QueryRequest;
 use google_bigquery2::hyper::client::HttpConnector;
 use google_bigquery2::hyper_rustls::{HttpsConnector, HttpsConnectorBuilder};
@@ -19,12 +19,12 @@ use google_bigquery2::oauth2::authenticator::ApplicationDefaultCredentialsTypes;
 use google_bigquery2::oauth2::{
     ApplicationDefaultCredentialsAuthenticator, ApplicationDefaultCredentialsFlowOpts,
 };
-use google_bigquery2::{hyper, Bigquery};
+use google_bigquery2::{Bigquery, hyper};
 use hyper_proxy::{Intercept, Proxy, ProxyConnector};
 use regex::Regex;
 use reqwest::Client;
 use serde_json::Value;
-use slog::{info, warn, Logger};
+use slog::{Logger, info, warn};
 use structopt::StructOpt;
 
 use crate::common::{Mission, SnapshotConfig, SnapshotPath, TransferURL};
@@ -89,7 +89,7 @@ async fn pypi_index(
 ) -> Result<Vec<String>> {
     info!(logger, "downloading pypi index...");
     let mut index = client
-        .get(&format!("{}/", simple_base))
+        .get(format!("{}/", simple_base))
         .send()
         .await?
         .text()
@@ -297,7 +297,7 @@ impl SnapshotStorage<SnapshotPath> for Pypi {
                     async move {
                         progress.set_message(&name);
                         let package = client
-                            .get(&format!("{}/{}/", simple_base, name))
+                            .get(format!("{}/{}/", simple_base, name))
                             .send()
                             .await?
                             .text()

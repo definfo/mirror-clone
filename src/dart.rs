@@ -4,7 +4,7 @@ use crate::metadata::SnapshotMeta;
 use crate::traits::{SnapshotStorage, SourceStorage};
 
 use async_trait::async_trait;
-use futures_util::{stream, StreamExt, TryStreamExt};
+use futures_util::{StreamExt, TryStreamExt, stream};
 use serde_json::Value;
 use slog::{info, warn};
 use structopt::StructOpt;
@@ -80,7 +80,7 @@ impl SnapshotStorage<SnapshotMeta> for Dart {
                 let func = async move {
                     progress.set_message(&name);
                     let package = client
-                        .get(&format!("{}/api/packages/{}", base, name))
+                        .get(format!("{}/api/packages/{}", base, name))
                         .send()
                         .await?
                         .text()

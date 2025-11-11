@@ -123,7 +123,7 @@ pub fn filter_map_file_objs(
     files.into_iter().filter_map(|f: FileMeta| {
         YAML_CONFIG_PATTERN.captures(&f.path).and_then(|c| {
             c.name("ver").and_then(|m| {
-                let name = f.path.split('/').last().unwrap().to_string();
+                let name = f.path.split('/').next_back().unwrap().to_string();
                 Some(ObjectInfo {
                     name,
                     is_sig: c.name("sig").is_some(),
