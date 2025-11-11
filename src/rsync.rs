@@ -20,7 +20,7 @@ use crate::error::Error;
 use crate::metadata::SnapshotMeta;
 
 use async_trait::async_trait;
-use chrono::TimeZone;
+use chrono::NaiveDateTime;
 use slog::{info, warn};
 use std::process::Stdio;
 use structopt::StructOpt;
@@ -107,12 +107,24 @@ impl SnapshotStorage<SnapshotMeta> for Rsync {
                     continue;
                 }
                 if permission.starts_with("-r") {
-                    let datetime = timezone
-                        .datetime_from_str(&format!("{} {}", date, time), "%Y/%m/%d %H:%M:%S")?;
-                    let size = size.replace(',', "");
+                    let datetime = NaiveDateTime::parse_from_str(
+                        &format!("{} {}", date, time),
+                        "%Y/%m/%d %H:%M:%S",
+                    )?
+                    .and_local_timezone(timezone);
+                    let datetime = match datetime {
+                        chrono::offset::LocalResult::Single(_) => datetime.single(),
+                        chrono::offset::LocalResult::Ambiguous(_, _) => datetime.earliest(),
+                        chrono::offset::LocalResult::None => None,
+                    }
+                    .expect("failed to read timezone");
+                    let size = size
+                        .replace(',', "")
+                        .parse()
+                        .expect("malformed size param in rsync output");
                     let meta = SnapshotMeta {
                         key: file.to_string(),
-                        size: Some(size.parse().unwrap()),
+                        size: Some(size),
                         last_modified: Some(datetime.timestamp() as u64),
                         ..Default::default()
                     };

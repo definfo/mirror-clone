@@ -24,10 +24,10 @@ use crate::stream_pipe::ByteStream;
 use crate::traits::{Key, SnapshotStorage, TargetStorage};
 
 use async_trait::async_trait;
-use futures_util::{stream, StreamExt};
+use futures_util::{StreamExt, stream};
 use rusoto_core::Region;
 use rusoto_s3::{
-    DeleteObjectRequest, HeadObjectRequest, ListObjectsV2Request, PutObjectRequest, S3Client, S3,
+    DeleteObjectRequest, HeadObjectRequest, ListObjectsV2Request, PutObjectRequest, S3, S3Client,
 };
 use slog::{debug, info, warn};
 

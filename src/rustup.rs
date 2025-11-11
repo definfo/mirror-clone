@@ -9,7 +9,7 @@ use crate::error::{Error, Result};
 use crate::traits::{SnapshotStorage, SourceStorage};
 use async_trait::async_trait;
 use chrono::{DateTime, Duration, Utc};
-use futures_util::{stream, StreamExt, TryStreamExt};
+use futures_util::{StreamExt, TryStreamExt, stream};
 use regex::Regex;
 use slog::{info, warn};
 use structopt::StructOpt;
@@ -73,7 +73,7 @@ impl SnapshotStorage<SnapshotPath> for Rustup {
                     let target = format!("dist/{}/channel-rust-{}.toml", day_string, channel);
                     progress.set_message(&target);
                     let data = client
-                        .get(&format!("{}/{}", base, target))
+                        .get(format!("{}/{}", base, target))
                         .send()
                         .await?
                         .text()

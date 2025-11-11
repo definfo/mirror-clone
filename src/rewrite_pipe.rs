@@ -88,7 +88,7 @@ where
                     ref mut file,
                     path: _,
                 } => {
-                    if let Some(ref mut file) = file {
+                    if let Some(file) = file {
                         let mut buffer = String::new();
                         if file.read_to_string(&mut buffer).await.is_err() {
                             warn!(logger, "rewrite_pipe: not a valid UTF-8 file, ignored");

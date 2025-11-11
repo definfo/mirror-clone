@@ -64,7 +64,7 @@ impl SnapshotStorage<SnapshotMeta> for GitHubRelease {
 
         info!(logger, "fetching GitHub json...");
         let data = client
-            .get(&format!(
+            .get(format!(
                 "https://api.github.com/repos/{}/releases",
                 self.repo
             ))

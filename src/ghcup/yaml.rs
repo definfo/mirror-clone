@@ -11,8 +11,8 @@ use crate::error::Result;
 use crate::metadata::{SnapshotMeta, SnapshotMetaFlag};
 use crate::traits::{SnapshotStorage, SourceStorage};
 
-use super::utils::{filter_map_file_objs, get_raw_blob_url, list_files};
 use super::GhcupRepoConfig;
+use super::utils::{filter_map_file_objs, get_raw_blob_url, list_files};
 
 #[derive(Debug, Clone)]
 pub struct GhcupYaml {

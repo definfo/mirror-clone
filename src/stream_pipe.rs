@@ -30,7 +30,8 @@ pub enum ByteObject {
 }
 
 impl ByteObject {
-    pub fn as_stream(&mut self) -> impl Stream<Item = std::io::Result<bytes::Bytes>> {
+    // Rust 2024 needs explicit `+ use<>` to capture more lifetimes than intended
+    pub fn as_stream(&mut self) -> impl Stream<Item = std::io::Result<bytes::Bytes>> + use<> {
         match self {
             ByteObject::LocalFile { file, .. } => codec::FramedRead::new(
                 BufReader::new(file.take().unwrap()),
@@ -164,17 +165,16 @@ where
         let modified_at =
             modified_at.ok_or_else(|| Error::PipeError("no modified time".to_string()))?;
 
-        if let Some(snapshot_modified_at) = snapshot_modified_at {
-            if let Some(http_modified_at) = http_modified_at {
-                if snapshot_modified_at != http_modified_at {
-                    warn!(
-                        mission.logger,
-                        "mismatch modified time: http={}, snapshot={}",
-                        http_modified_at,
-                        snapshot_modified_at
-                    );
-                }
-            }
+        if let Some(snapshot_modified_at) = snapshot_modified_at
+            && let Some(http_modified_at) = http_modified_at
+            && snapshot_modified_at != http_modified_at
+        {
+            warn!(
+                mission.logger,
+                "mismatch modified time: http={}, snapshot={}",
+                http_modified_at,
+                snapshot_modified_at
+            );
         }
 
         let content_type = response
@@ -193,13 +193,13 @@ where
             total_bytes += content.len() as u64;
         }
 
-        if let Some(content_length) = content_length {
-            if total_bytes != content_length {
-                return Err(Error::PipeError(format!(
-                    "content length mismatch: {}/{}",
-                    total_bytes, content_length
-                )));
-            }
+        if let Some(content_length) = content_length
+            && total_bytes != content_length
+        {
+            return Err(Error::PipeError(format!(
+                "content length mismatch: {}/{}",
+                total_bytes, content_length
+            )));
         }
 
         f.flush().await?;

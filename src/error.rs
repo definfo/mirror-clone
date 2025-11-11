@@ -20,6 +20,8 @@ pub enum Error {
     StorageError(String),
     #[error("Rusoto Error {0}")]
     RusotoError(String),
+    #[error("GCP Error {0}")]
+    GCPError(String),
     #[error("Configure Error {0}")]
     ConfigureError(String),
     #[error("HTTP Error {0}")]
@@ -38,13 +40,17 @@ pub enum Error {
         expected: String,
         got: String,
     },
-    #[error("GCP Error {0}")]
-    GCPError(#[from] google_bigquery2::Error),
 }
 
 impl<T: std::fmt::Debug> From<rusoto_core::RusotoError<T>> for Error {
     fn from(error: rusoto_core::RusotoError<T>) -> Self {
         Error::RusotoError(format!("Rusoto Error: {:?}", error))
+    }
+}
+
+impl From<google_bigquery2::Error> for Error {
+    fn from(error: google_bigquery2::Error) -> Self {
+        Error::GCPError(format!("GCP Error: {:?}", error))
     }
 }
 

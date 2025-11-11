@@ -6,12 +6,12 @@
 //! at the end. This is done by setting priority in snapshot metadata.
 
 use std::io;
-use std::io::ErrorKind;
+// use std::io::ErrorKind;
 
 use async_trait::async_trait;
-use futures_util::{stream, StreamExt, TryStreamExt};
-use serde::de::DeserializeSeed;
+use futures_util::{StreamExt, TryStreamExt, stream};
 use serde::Deserialize;
+use serde::de::DeserializeSeed;
 use slog::{info, warn};
 use structopt::StructOpt;
 use tokio_util::io::{StreamReader, SyncIoBridge};
@@ -42,8 +42,8 @@ pub struct Conda {
 mod de {
     use std::fmt::Formatter;
 
-    use serde::de::{DeserializeSeed, IgnoredAny, MapAccess, Visitor};
     use serde::Deserializer;
+    use serde::de::{DeserializeSeed, IgnoredAny, MapAccess, Visitor};
 
     use crate::metadata::SnapshotMeta;
 
@@ -235,7 +235,7 @@ impl SnapshotStorage<SnapshotMeta> for Conda {
                     .send()
                     .await?
                     .bytes_stream()
-                    .map_err(|e| io::Error::new(ErrorKind::Other, e));
+                    .map_err(io::Error::other);
                 let reader = SyncIoBridge::new(StreamReader::new(stream));
                 let mut packages = {
                     let repo = repo.clone();
