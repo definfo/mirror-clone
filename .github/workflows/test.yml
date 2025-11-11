@@ -2,10 +2,12 @@ on:
   push:
     branches:
     - master
+    - legacy
   pull_request:
     branches:
     - master
-    
+    - legacy
+
 name: Test
 
 jobs:
@@ -13,7 +15,7 @@ jobs:
     name: Lint and Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v5
         name: Checkout 🛎️
       - name: Install musl toolchain
         run: sudo apt-get install -y musl-tools
